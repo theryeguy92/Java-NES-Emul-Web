@@ -59,16 +59,16 @@ public class NEmuSContext implements Renderer {
      */
     NEmuSContext(long windowHandle) {
         nes = new NES();
-        inputMapper = new InputMapper(windowHandle);
+        inputMapper = new InputMapper(windowHandle, nes);
         audioEngine = new AudioEngine(this);
 
-        //We enable texture and create the quad, fbo and texture used to render
+        // enable texture and create the quad, fbo and texture used to render
         glEnable(GL_TEXTURE_2D);
         screen_texture = new Texture(PPU_2C02.SCREEN_WIDTH, PPU_2C02.SCREEN_HEIGHT, nes.getPpu().getScreenBuffer());
         fbo = new Fbo(PPU_2C02.SCREEN_WIDTH, PPU_2C02.SCREEN_HEIGHT);
         screen_quad = new Quad();
 
-        //We initialize the post processing pipeline
+        // We initialize the post processing pipeline
         try {
             pipeline = new Pipeline(screen_quad);
             default_shader = new ShaderProgram("shaders/vertex.glsl", "shaders/filters/no_filter.glsl");
