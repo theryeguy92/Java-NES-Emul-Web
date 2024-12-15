@@ -1,5 +1,6 @@
 package openGL;
 
+import org.apache.commons.collections.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL30;
@@ -117,4 +118,12 @@ public class Fbo {
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
         GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, texture, 0);
     }
+}
+
+public ByteBuffer captureFrame() {
+    ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * 4); // RGBA
+    bindFrameBuffer();
+    GL11.glReadPixels(0, 0, width, height, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
+    unbindFrameBuffer();
+    return buffer;
 }
