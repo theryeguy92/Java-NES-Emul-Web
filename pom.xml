@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.alban098</groupId>
@@ -10,7 +11,7 @@
         <lwjgl.version>3.3.0</lwjgl.version>
         <joml.version>1.10.4</joml.version>
         <java.version>16</java.version>
-        <lwjgl.natives>linux</lwjgl.natives> <!-- Set this according to your platform -->
+        <lwjgl.natives>linux</lwjgl.natives>
     </properties>
 
     <repositories>
@@ -19,12 +20,12 @@
             <url>https://repo1.maven.org/maven2/</url>
         </repository>
         <repository>
-            <id>clojars</id>
-            <url>https://repo.clojars.org/</url>
-        </repository>
-        <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>clojars</id>
+            <url>https://clojars.org/repo/</url>
         </repository>
     </repositories>
 
@@ -41,7 +42,7 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- LWJGL dependencies with native classifiers -->
+        <!-- LWJGL dependencies -->
         <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl</artifactId>
@@ -51,12 +52,6 @@
         <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-glfw</artifactId>
-            <version>${lwjgl.version}</version>
-            <classifier>natives-${lwjgl.natives}</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-nanovg</artifactId>
             <version>${lwjgl.version}</version>
             <classifier>natives-${lwjgl.natives}</classifier>
         </dependency>
@@ -72,53 +67,31 @@
             <version>${lwjgl.version}</version>
             <classifier>natives-${lwjgl.natives}</classifier>
         </dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-tinyfd</artifactId>
-            <version>${lwjgl.version}</version>
-            <classifier>natives-${lwjgl.natives}</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.joml</groupId>
-            <artifactId>joml</artifactId>
-            <version>${joml.version}</version>
-        </dependency>
 
         <!-- JavaFX dependencies -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>17.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-base</artifactId>
-            <version>17.0.2</version>
+            <classifier>linux</classifier>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>17.0.2</version>
+            <classifier>linux</classifier>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-graphics</artifactId>
             <version>17.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-media</artifactId>
-            <version>17.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-web</artifactId>
-            <version>17.0.2</version>
+            <classifier>linux</classifier>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-swing</artifactId>
             <version>17.0.2</version>
+            <classifier>linux</classifier>
         </dependency>
 
         <!-- Other dependencies -->
@@ -132,8 +105,18 @@
             <artifactId>LWJGUI</artifactId>
             <version>pre-mt</version>
         </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
+        </dependency>
 
-        <!-- JUnit dependencies for testing -->
+        <!-- JUnit for Testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -145,11 +128,6 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.8.1</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>3.2.2</version>
         </dependency>
     </dependencies>
 
@@ -164,6 +142,7 @@
             </resource>
         </resources>
         <plugins>
+            <!-- Compiler plugin with JavaFX support -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -171,8 +150,16 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <compilerArgs>
+                        <arg>--module-path</arg>
+                        <arg>/opt/javafx-sdk/lib</arg>
+                        <arg>--add-modules</arg>
+                        <arg>javafx.controls,javafx.fxml</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
+
+            <!-- Maven JAR plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -185,6 +172,8 @@
                     </archive>
                 </configuration>
             </plugin>
+
+            <!-- Maven Shade plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>

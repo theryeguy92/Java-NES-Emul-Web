@@ -21,6 +21,12 @@
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
+          <compilerArgs>
+            <arg>--module-path</arg>
+            <arg>/opt/javafx-sdk/lib</arg>
+            <arg>--add-modules</arg>
+            <arg>javafx.controls,javafx.fxml</arg>
+          </compilerArgs>
         </configuration>
       </plugin>
       <plugin>
@@ -57,12 +63,12 @@
       <url>https://repo1.maven.org/maven2/</url>
     </repository>
     <repository>
-      <id>clojars</id>
-      <url>https://repo.clojars.org/</url>
-    </repository>
-    <repository>
       <id>jitpack.io</id>
       <url>https://jitpack.io</url>
+    </repository>
+    <repository>
+      <id>clojars</id>
+      <url>https://clojars.org/repo/</url>
     </repository>
   </repositories>
   <dependencies>
