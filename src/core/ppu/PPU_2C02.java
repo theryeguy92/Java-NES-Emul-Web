@@ -1073,4 +1073,8 @@ public class PPU_2C02 {
         }
         return tile;
     }
+    public ByteBuffer getFrameBuffer() {
+        return screen_buffer; // Returns the ByteBuffer, giving the current frame
+    }
+    
 }

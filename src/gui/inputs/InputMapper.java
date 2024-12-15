@@ -1,9 +1,13 @@
 package gui.inputs;
 
+
+
 import exceptions.InvalidFileException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import core.NES;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,32 +28,34 @@ import static gui.inputs.NESInputs.*;
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
- * This class handle the mapping between User Input and the NES
+ * This class handles the mapping between User Input and the NES.
  */
 public class InputMapper {
 
     private static final float DEAD_ZONE_RADIUS = .4f;
 
     private final long window;
+    private final NES nes; // Instance of NES for controller updates
 
     private final Map<NESInputs, Integer> mappedControlsJoystick;
     private final Map<NESInputs, Integer> mappedControlsKeyboard;
     private Map<Integer, String> keyNames;
     private Map<Integer, String> buttonNames;
 
-    /**
-     * Create a new InputMapper and load the config file
+     /**
+     * Create a new InputMapper and load the config file.
      *
      * @param window the OpenGL window ID used to get the events from
+     * @param nes    the NES instance to update controller states
      */
-    public InputMapper(long window) {
+    public InputMapper(long window, NES nes) {
         this.window = window;
+        this.nes = nes; // Store the NES instance
         mappedControlsJoystick = new HashMap<>();
         mappedControlsKeyboard = new HashMap<>();
         initKeyNames();
         loadConfig();
     }
-
     private void initKeyNames() {
         keyNames = new HashMap<>();
         buttonNames = new HashMap<>();
@@ -413,4 +419,17 @@ public class InputMapper {
         mappedControlsJoystick.replace(input, button);
         saveConfig();
     }
+
+    /**
+     * Handle WebSocket input to update controller state.
+     *
+     * @param input  the input received (e.g., CONTROLLER_1_A)
+     * @param player the player index (0 or 1)
+     * @param pressed whether the button is pressed or released
+     */
+    public void handleWebSocketInput(String input, int player, boolean pressed) {
+        NESInputs nesInput = NESInputs.valueOf(input);
+        nes.updateControllerState(player, nesInput, pressed); // Update NES controller state
+    }
 }
+

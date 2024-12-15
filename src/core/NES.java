@@ -5,6 +5,8 @@ import core.cartridge.Cartridge;
 import core.cpu.CPU_6502;
 import core.ppu.PPU_2C02;
 import utils.IntegerWrapper;
+import gui.inputs.NESInputs;
+
 
 /**
  * This class represents the Bus of the NES
@@ -278,4 +280,46 @@ public class NES {
     public boolean isSoundRenderingEnabled() {
         return sound_rendering; // Accessor for sound rendering state
     }
+
+    public void updateControllerState(int player, NESInputs input, boolean pressed) {
+        if (player < 0 || player > 1) return; // Validate player index
+        if (pressed) {
+            controller[player] |= getButtonMask(input); // Set the corresponding bit
+        } else {
+            controller[player] &= ~getButtonMask(input); // Clear the corresponding bit
+        }
+    }
+    
+    private int getButtonMask(NESInputs input) {
+        switch (input) {
+            case CONTROLLER_1_A:
+            case CONTROLLER_2_A:
+                return 0x80;
+            case CONTROLLER_1_B:
+            case CONTROLLER_2_B:
+                return 0x40;
+            case CONTROLLER_1_SELECT:
+            case CONTROLLER_2_SELECT:
+                return 0x20;
+            case CONTROLLER_1_START:
+            case CONTROLLER_2_START:
+                return 0x10;
+            case CONTROLLER_1_UP:
+            case CONTROLLER_2_UP:
+                return 0x08;
+            case CONTROLLER_1_DOWN:
+            case CONTROLLER_2_DOWN:
+                return 0x04;
+            case CONTROLLER_1_LEFT:
+            case CONTROLLER_2_LEFT:
+                return 0x02;
+            case CONTROLLER_1_RIGHT:
+            case CONTROLLER_2_RIGHT:
+                return 0x01;
+            default:
+                throw new IllegalArgumentException("Unknown NESInput: " + input);
+        }
+    }
+    
+    
 }
